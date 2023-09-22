@@ -14,29 +14,29 @@ class UsuariosTable extends Migration
                 'type' => 'INT',
                 'constraint' => 11,
                 'unsigned' => true,
-                'auto_ increment' => true
+                'auto_increment' => true
             ],
             'usuario' => [
                 'type' => 'VARCHAR',
                 'constraint' => '50',
-                'null' => true,
+                'null' => true
             ],
             'senha' => [
                 'type' => 'VARCHAR',
                 'constraint' => '200',
-                'null' => true,
+                'null' => true
             ],
             'created_at' => [
                 'type' => 'DATETIME',
-                'null' => true,
+                'null' => true
             ],
             'updated_at' => [
                 'type' => 'DATETIME',
-                'null' => true,
+                'null' => true
             ],
             'deleted_at' => [
                 'type' => 'DATETIME',
-                'null' => true,
+                'null' => true
             ]
         ]); 
 

@@ -14,7 +14,7 @@ class TasksTable extends Migration
                 'type' => 'INT',
                 'constraint' => 11,
                 'unsigned' => true,
-                'auto_ increment' => true
+                'auto_increment' => true
             ],
             'id_user' => [
                 'type' => 'INT',
@@ -39,15 +39,15 @@ class TasksTable extends Migration
             ],
             'created_at' => [
                 'type' => 'DATETIME',
-                'null' => true,
+                'null' => true
             ],
             'updated_at' => [
                 'type' => 'DATETIME',
-                'null' => true,
+                'null' => true
             ],
             'deleted_at' => [
                 'type' => 'DATETIME',
-                'null' => true,
+                'null' => true
             ]
         ]); 
 

@@ -10,18 +10,16 @@ class Main extends BaseController
 {
     public function index()
     {
-        // echo "Hello World!";
-        $model_usuarios = new UsuariosModel();
-        $usuarios = $model_usuarios->findAll();
+        //
+    }
+    
+    public function login()
+    {
+        return view('login_frm');
+    }
 
-        // dd($usuarios);
-        echo 'pre';
-        print_r($usuarios);
-
-        $model_tasks = new TasksModel();
-        $tasks = $model_tasks->findAll();
-
-        // echo 'pre';
-        // print_r($tasks);
+    public function login_submit()
+    {
+        echo 'login submit';
     }
 }

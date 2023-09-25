@@ -23,6 +23,11 @@
                         <button class="btn btn-light w-10">Entrar</button>  
                     </div>
                     <?= form_close() ?>
+                    <?php if(!empty($login_error)): ?>
+                        <div class="alert alert-danger text-center p-1">
+                        <?= $login_error ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

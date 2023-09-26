@@ -47,7 +47,7 @@ class TasksSeeder extends Seeder
             ]
         ];
 
-        //insert usuarios
+        //insert tasks
         $this->db->table('tasks')->insertBatch($tasks);
 
     }

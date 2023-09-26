@@ -13,6 +13,12 @@
     <link rel ="stylesheet" href="<?= base_url('assets/fontawesome/css/all.min.css') ?>">
 </head>
 <body>
+
+    <!-- render top bar when logged in-->
+    <?php if(session()->has('id')): ?>
+        <?= $this->include('layouts/top_bar') ?>
+    <?php endif; ?>
+
     <!-- render setion -->
     <?= $this->renderSection('content') ?>
 

@@ -10,11 +10,9 @@ class Main extends BaseController
 {
     public function index()
     {
-       if(session()->has('id')){
-            echo 'Logado';
-       } else {
-            echo 'Não logado';
-       }
+       // main page
+       $data =[];
+       return view('main', $data);
     }
     
     public function login()
@@ -90,5 +88,69 @@ class Main extends BaseController
        //redirect to home page
        return redirect()->to('/');
 
+    }
+    
+    public function logout()
+    {
+       // destroy session
+       session()->destroy();
+
+       //redirect to main page
+       return redirect()->to('/');
+    }
+   
+    public function new_task()
+    {
+        $data = [];
+
+        //check for validation errors
+        $validation_errors = session()->getFlashdata('validation_errors');
+        if($validation_errors){
+            $data['validation_errors'] = $validation_errors;
+        }
+
+        return view('new_task_frm', $data);
+    }
+
+    public function new_task_submit()
+    {
+        //form validation
+        $validation = $this->validate([
+            'text_tarefa' => [
+                'label' => 'Designação da tarefa',
+                'rules' => 'required|min_length[5]|max_length[200]',
+                'errors' => [
+                    'required' => 'O campo {field} é obrigatório.',
+                    'min_length' => 'O campo {field} deve ter no mínimo {param} caracteres.',
+                    'max_length' => 'O campo {field} deve ter no máximo {param} caracteres.',
+                ]
+            ],
+            'text_descricao' => [
+                'label' => 'Descrição da tarefa',
+                'rules' => 'max_length[500]',
+                'errors' => [
+                    'max_length' => 'O campo {field} deve ter no máximo {param} caracteres.',
+                ]
+            ],
+        ]);
+        
+        if(!$validation){
+            return redirect()->back()->withInput()->with('validation_errors', $this->validator->getErrors());
+        }
+
+        //get form data
+        $titulo = $this->request->getPost('text_tarefa');
+        $descricao = $this->request->getPost('text_descricao');    
+
+        //save data
+        echo 'fim';
+        
+    }
+
+    public function sessao()
+    {
+        echo '<pre>';
+        print_r(session()->get());
+        echo '</pre>';
     }
 }

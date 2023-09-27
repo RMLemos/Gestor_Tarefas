@@ -12,6 +12,12 @@ class Main extends BaseController
     {
        // main page
        $data =[];
+
+       //load tasks from the database and the user in session
+       $tasks_model = new TasksModel();
+       $data['tasks'] = $tasks_model->where('id_user', session()->id)->findAll();
+       $data ['datatables'] = true;
+
        return view('main', $data);
     }
     
@@ -143,8 +149,33 @@ class Main extends BaseController
         $descricao = $this->request->getPost('text_descricao');    
 
         //save data
-        echo 'fim';
+        $tasks_model = new TasksModel();
+        $tasks_model->insert([
+            'id_user' => session()->id,
+            'task_name' => $titulo,
+            'task_description' => $descricao,
+            'task_status' => 'nova'
+        ]);
+
+        //redirect to main page
+       return redirect()->to('/');
         
+    }
+
+    public function search ()
+    {
+        $data =[];
+
+        //get search items
+        $search_term = $this->request->getPost('text_search');
+
+        //load tasks from database and the search term
+        $tasks_model = new TasksModel();
+        $data['tasks'] = $tasks_model->where('id_user', session()->id)->like('task_name', $search_term)->findAll();
+        $data['datatables'] = true;
+
+        return view('main', $data);
+
     }
 
     public function sessao()

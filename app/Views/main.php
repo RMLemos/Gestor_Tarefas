@@ -42,29 +42,35 @@
     </div>
 </section>
 
+<?php if(count($tasks) >0): ?>
 <section class="container mt-3">
     <div class="row">
         <div class="col">
-            <table class="table table-striped table-light">
-                <thead>
-                    <tr>
-                        <th>Tarefas</th>
-                        <th>Status</th>
+            <table class="table table-striped table-light" id="table_tasks">
+                <thead class="table-secondary">
+                    <tr class="text-center">
+                        <th width='50%'>Tarefa</th>
+                        <th width='25%'>Status</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>A</td>
-                        <td>B</td>
-                        <td>C</td>
-                    </tr>
+                    <?php foreach($tasks as $task):?>
+                        <tr>
+                            <td><?= $task->task_name ?></td>
+                            <td><?= STATUS_LIST[$task->task_status] ?></td>
+                            <td class="text-end">
+                                <a href='<?= site_url('edit_task/'. $task->id) ?>' class="btn btn-secondary btn-sm"><i class="fa-solid fa-edit"></i></a>
+                                <a href='<?= site_url('delete_task/'. $task->id) ?>' class="btn btn-secondary btn-sm"><i class="fa-solid fa-trash"></i></a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
     </div>
 </section>
-
+<?php else: ?>
 <section class="container mt-3">
     <div class="row">
         <div class="col text-center">
@@ -72,4 +78,29 @@
             </div>
     </div>
 </section>
+<?php endif; ?>
+
+<!-- datatables -->
+<?php if(count($tasks) >0): ?>
+<script>
+    $(document).ready(function() {
+        $('#table_tasks').DataTable({
+            "language": {
+                "lengthMenu": "Mostrar _MENU_ registros por página",
+                "zeroRecords": "Nada encontrado",
+                "info": "Mostrando página _PAGE_ de _PAGES_",
+                "infoEmpty": "Nenhum registro disponível",
+                "infoFiltered": "(filtrado de _MAX_ registros no total)",
+                "search": "Pesquisar:",
+                "paginate": {
+                    "first": "Primeiro",
+                    "last": "Último",
+                    "next": "Próximo",
+                    "previous": "Anterior"
+                },
+            }
+        });
+    });
+</script>
+<?php endif; ?>
 <?= $this->endSection() ?>

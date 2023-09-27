@@ -15,5 +15,8 @@ use CodeIgniter\Router\RouteCollection;
  $routes->get('/new_task', 'Main::new_task');
  $routes->post('/new_task_submit', 'Main::new_task_submit');
 
-  //temp
-  $routes->get('/sessao', 'Main::sessao');
+ //search and filter tasks
+ $routes->post('/search', 'Main::search');
+
+//temp
+$routes->get('/sessao', 'Main::sessao');

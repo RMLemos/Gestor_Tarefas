@@ -29,6 +29,3 @@ use CodeIgniter\Router\RouteCollection;
 
   //task detail 
   $routes->get('/task_details/(:alphanum)', 'Main::task_details/$1');
-
- //temp
- $routes->get('/sessao', 'Main::sessao');

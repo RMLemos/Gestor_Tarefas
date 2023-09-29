@@ -23,6 +23,11 @@ class Main extends BaseController
     
     public function login()
     {
+        //check if there is an active session
+        if(session()->has('id')){
+            return redirect()->to('/');  
+        }
+
         $data = [];
 
         //check for validations errors
@@ -383,10 +388,4 @@ class Main extends BaseController
         return view('task_details', $data);
     }
 
-    public function sessao()
-    {
-        echo '<pre>';
-        print_r(session()->get());
-        echo '</pre>';
-    }
 }

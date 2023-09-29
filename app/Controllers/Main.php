@@ -154,7 +154,7 @@ class Main extends BaseController
             'id_user' => session()->id,
             'task_name' => $titulo,
             'task_description' => $descricao,
-            'task_status' => 'nova'
+            'task_status' => 'new'
         ]);
 
         //redirect to main page
@@ -175,7 +175,212 @@ class Main extends BaseController
         $data['datatables'] = true;
 
         return view('main', $data);
+    }
 
+    public function filter ($status)
+    {
+        $data = [];
+
+        //load tasks from user and with status x
+        $tasks_model = new TasksModel();
+        
+        if($status == 'all'){
+            $data['tasks'] = $tasks_model->where('id_user', session()->id)->findAll();
+        } else {
+            $data['tasks'] = $tasks_model
+                ->where('id_user', session()->id)
+                ->where('task_status', $status)
+                ->findAll();
+        }
+        
+        $data['datatables'] = true;
+
+        $data['status'] = $status;
+
+        return view('main', $data);
+    }
+
+    public function edit_task($enc_id){
+        //decrypt task id
+        $task_id = decrypt($enc_id);
+        if(!$task_id){
+            return redirect()->to('/');
+        }
+
+        $data = [];
+
+        //check for validaton errors
+        $validation_errors = session()->getFlashdata('validation_errors');
+        if( $validation_errors){
+            $data['validation_errors'] = $validation_errors;
+        }
+
+        //load task data
+        $tasks_model = new TasksModel();
+        $task_data = $tasks_model->where('id', $task_id)->first();
+        if(!$task_data){
+            return redirect()->to('/');  
+        }
+
+        //check if task belongs to the user in the session
+        if($task_data->id_user != session()->id){
+            return redirect()->to('/');  
+        }
+
+        $data['task'] = $task_data;
+
+        return view('edit_task_frm', $data);
+    }
+
+    public function edit_task_submit()
+    {
+        //form validation
+        $validation = $this->validate([
+            'hidden_id' => [
+                'label' => 'ID',
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'O campo {field} é obrigatório.',
+                ]
+            ],
+            'text_tarefa' => [
+                'label' => 'Designação da tarefa',
+                'rules' => 'required|min_length[5]|max_length[200]',
+                'errors' => [
+                    'required' => 'O campo {field} é obrigatório.',
+                    'min_length' => 'O campo {field} deve ter no mínimo {param} caracteres.',
+                    'max_length' => 'O campo {field} deve ter no máximo {param} caracteres.',
+                ]
+            ],
+            'text_descricao' => [
+                'label' => 'Descrição da tarefa',
+                'rules' => 'max_length[500]',
+                'errors' => [
+                    'max_length' => 'O campo {field} deve ter no máximo {param} caracteres.',
+                ]
+            ],
+            'select_status' => [
+                'label' => 'Status',
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'O campo {field} é obrigatório.',
+                ]
+            ]
+        ]);
+        
+        if(!$validation){
+            return redirect()->back()->withInput()->with('validation_errors', $this->validator->getErrors());
+        }
+
+        //get form data
+        $task_id = decrypt($this->request->getPost('hidden_id'));
+        if(!$task_id){
+            return redirect()->to('/');
+        }
+
+        $tarefa = $this->request->getPost('text_tarefa');
+        $descricao = $this->request->getPost('text_descricao');
+        $status = $this->request->getPost('select_status');
+
+        //load task data
+        $tasks_model = new TasksModel();
+        $task_data = $tasks_model->where('id', $task_id)->first();
+        if(!$task_data){
+            return redirect()->to('/');
+        }
+
+        //check if task belongs to the user in the session
+        if($task_data->id_user != session()->id){
+            return redirect()->to('/');  
+        }
+
+        //update task in database
+        $tasks_model->update($task_id,
+        [
+            'task_name' => $tarefa,
+            'task_description' => $descricao,
+            'task_status' => $status
+        ]);
+
+        //redirect to home page 
+        return redirect()->to('/'); 
+    }   
+
+    public function delete_task($enc_id){
+        //decrypt task id
+        $task_id = decrypt($enc_id);
+        if(!$task_id){
+            return redirect()->to('/');
+        }
+
+        //load task data
+        $tasks_model = new TasksModel();
+        $task_data = $tasks_model->where('id', $task_id)->first();
+        if(!$task_data){
+            return redirect()->to('/');
+        }
+
+        //check if task belongs to the user in the session
+        if($task_data->id_user != session()->id){
+            return redirect()->to('/');  
+        }
+
+        //display task with question if it is to delete or not delete
+        $data['task'] = $task_data;
+        
+        return view('delete_task', $data);  
+    }
+
+    public function delete_task_confirm($enc_id){
+        //decrypt task id
+        $task_id = decrypt($enc_id);
+        if(!$task_id){
+            return redirect()->to('/');
+        }
+
+        //load task data
+        $tasks_model = new TasksModel();
+        $task_data = $tasks_model->where('id', $task_id)->first();
+        if(!$task_data){
+            return redirect()->to('/');
+        }
+
+        //check if task belongs to the user in the session
+        if($task_data->id_user != session()->id){
+            return redirect()->to('/');  
+        }
+        
+        //delete task
+        $tasks_model->delete($task_id);
+
+        //redirect to home page 
+        return redirect()->to('/');
+    }
+
+    public function task_details($enc_id)
+    {
+        //decrypt task id
+        $task_id = decrypt($enc_id);
+        if(!$task_id){
+            return redirect()->to('/');
+        }
+
+        //load task data
+        $tasks_model = new TasksModel();
+        $task_data = $tasks_model->where('id', $task_id)->first();
+        if(!$task_data){
+            return redirect()->to('/');
+        }
+
+        //check if task belongs to the user in the session
+        if($task_data->id_user != session()->id){
+            return redirect()->to('/');  
+        }
+        
+        //display task with question if it is to delete or not delete
+        $data['task'] = $task_data;
+        
+        return view('task_details', $data);
     }
 
     public function sessao()

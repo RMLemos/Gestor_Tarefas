@@ -15,16 +15,14 @@
         </div>
         <div class="col text-end">
             <!-- status filter-->
-            <?= form_open('filter') ?>
-                <div class="d-flex mb-3 align-items-center">
-                    <label class="me-3">Status:</label>
-                        <select name="select_status" class="form-select">
-                            <?php foreach(STATUS_LIST as $key => $value): ?>
-                                <option value="<?= $key ?>"><?= $value ?></option>
-                                <?php endforeach; ?>
-                        </select>
-                </div>
-            <?= form_close() ?>
+            <div class="d-flex mb-3 align-items-center">
+                <label class="me-3">Status:</label>
+                <select name="select_status" class="form-select">
+                    <?php foreach(STATUS_LIST as $key => $value): ?>
+                        <option value="<?= $key ?>" <?= check_status($key, !empty($status)? $status : '') ?>><?= $value ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
         </div>
 
         <div class="col text-end">
@@ -57,11 +55,13 @@
                 <tbody>
                     <?php foreach($tasks as $task):?>
                         <tr>
-                            <td><?= $task->task_name ?></td>
+                            <td>
+                               <a href="<?= site_url('task_details/'. encrypt($task->id)) ?>" class="text-primary-emphasis" style="text-decoration:none;"><?= $task->task_name ?></a> 
+                            </td>
                             <td><?= STATUS_LIST[$task->task_status] ?></td>
                             <td class="text-end">
-                                <a href='<?= site_url('edit_task/'. $task->id) ?>' class="btn btn-secondary btn-sm"><i class="fa-solid fa-edit"></i></a>
-                                <a href='<?= site_url('delete_task/'. $task->id) ?>' class="btn btn-secondary btn-sm"><i class="fa-solid fa-trash"></i></a>
+                                <a href='<?= site_url('edit_task/' . encrypt($task->id)) ?>' class="btn btn-secondary btn-sm"><i class="fa-solid fa-edit"></i></a>
+                                <a href='<?= site_url('delete_task/' . encrypt($task->id)) ?>' class="btn btn-secondary btn-sm"><i class="fa-solid fa-trash"></i></a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -81,7 +81,6 @@
 <?php endif; ?>
 
 <!-- datatables -->
-<?php if(count($tasks) >0): ?>
 <script>
     $(document).ready(function() {
         $('#table_tasks').DataTable({
@@ -101,6 +100,12 @@
             }
         });
     });
+
+    //filter change
+    document.querySelector('select[name=select_status]').addEventListener('change', (e) =>{
+        let status = e.target.value;
+        window.location.href = `<?= site_url('filter') ?>/${status}`;
+    })
 </script>
-<?php endif; ?>
+
 <?= $this->endSection() ?>

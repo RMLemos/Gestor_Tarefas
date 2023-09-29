@@ -100,7 +100,6 @@ define('APP_NAME',      'Gestor de Tarefas');
 
 define('STATUS_LIST', [
     'all' => 'Tudo',
-    'nova' => 'Nova',
     'new' => 'Nova',
     'started' => 'Iniciada',
     'paused' => 'Pausada',
